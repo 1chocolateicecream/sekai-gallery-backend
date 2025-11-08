@@ -46,7 +46,7 @@
 
                 <h6 class="mt-3 mb-2 text-muted">Локация:</h6>
                 <div class="row">
-                    @foreach(['room', 'school', 'stage', 'street', 'cafe', 'park', 'outdoor', 'indoor', 'sekai'] as $tag)
+                    @foreach(['room', 'school', 'stage', 'street', 'cafe', 'park', 'outdoor', 'indoor', 'sekai', 'крыша', 'класс', 'коридор'] as $tag)
                     <div class="col-md-3 col-sm-4 col-6">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="tags[]" value="{{ $tag }}"
@@ -92,6 +92,22 @@
                     @endforeach
                 </div>
 
+                <h6 class="mt-3 mb-2 text-muted">Погода:</h6>
+                <div class="row">
+                    @foreach(['другая погода'] as $tag)
+                    <div class="col-md-3 col-sm-4 col-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="tags[]" value="{{ $tag }}"
+                                   id="tag_{{ str_replace(' ', '_', $tag) }}"
+                                   {{ in_array($tag, old('tags', $asset->tags ?? [])) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="tag_{{ str_replace(' ', '_', $tag) }}">
+                                {{ ucfirst($tag) }}
+                            </label>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+
                 @error('tags')
                     <div class="text-danger small mt-2">{{ $message }}</div>
                 @enderror
@@ -100,12 +116,14 @@
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">Update Asset</button>
                 <a href="{{ route('assets.index') }}" class="btn btn-secondary">Cancel</a>
-                <form action="{{ route('assets.destroy', $asset) }}" method="POST" class="ms-auto">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this asset?')">Delete Asset</button>
-                </form>
             </div>
+        </form>
+
+        <!-- Delete form outside main form to prevent conflicts -->
+        <form action="{{ route('assets.destroy', $asset) }}" method="POST" class="mt-3">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this asset?')">Delete Asset</button>
         </form>
     </div>
 </div>
