@@ -7,11 +7,13 @@ RUN apk add --no-cache \
     curl \
     sqlite \
     sqlite-dev \
+    postgresql-dev \
     libxml2-dev \
     oniguruma-dev \
     && docker-php-ext-install \
     pdo \
     pdo_sqlite \
+    pdo_pgsql \
     bcmath \
     opcache \
     && rm -rf /var/cache/apk/*
@@ -28,7 +30,7 @@ COPY . .
 # Устанавливаем зависимости Laravel (без dev-зависимостей)
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Создаём директорию для SQLite базы данных
+# Создаём необходимые директории и устанавливаем права
 RUN mkdir -p /var/www/html/database && \
     touch /var/www/html/database/database.sqlite && \
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
