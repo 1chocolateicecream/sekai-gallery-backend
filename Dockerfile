@@ -33,13 +33,12 @@ RUN mkdir -p /var/www/html/database && \
     touch /var/www/html/database/database.sqlite && \
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
 
-# Настраиваем Laravel для продакшена
-RUN php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
-
-# Открываем порт (Fly.io использует 8080 по умолчанию)
+# Открываем порт (Railway использует переменную окружения PORT)
 EXPOSE 8080
 
-# Запускаем Laravel встроенным сервером
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8080
+# Запускаем Laravel встроенным сервером с динамическим портом
+# Кэшируем конфиги в runtime, чтобы переменные окружения Railway работали
+CMD php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan migrate --force && \
+    php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
